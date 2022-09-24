@@ -9,10 +9,12 @@ namespace StateMachine
       delegate void transitioned(string stateName);
       [Export]
       public NodePath initialState = new NodePath();
+      public State state = new State();
 
       public async override void _Ready()
       {
-         State state = GetNode(initialState) as State;
+         base._Ready();
+         state = GetNode(initialState) as State;
          await ToSignal(Owner, "ready");
          var NodeChildren = GetChildren();
          var test = new Godot.Collections.Dictionary<string, object>();
@@ -30,11 +32,12 @@ namespace StateMachine
       }
       public override void _Process(float _delta)
       {
-         state.HandleInput(_delta);
+         base._Process(_delta);
+         state.OnUpdate(_delta);
       }
       public override void _PhysicsProcess(float _delta)
       {
-         state.HandleInput(_delta);
+         state.OnPhysicsUpdate(_delta);
       }
       public void TransitionTo(string TargetStateName, Godot.Collections.Dictionary<string, object> _msg)
       {
@@ -43,9 +46,9 @@ namespace StateMachine
             return;
          }
          state.OnExit();
-         state = GetNode(TargetStateName);
+         state = GetNode(TargetStateName) as State;
          state.OnEnter(_msg);
-         EmitSignal("transitiioned", state.name);
-      };
+         EmitSignal("transitiioned", nameof(state));
+      }
    }
 }

@@ -12,11 +12,11 @@ namespace StateMachine
       {
          return;
       }
-      public void Update(float _delta)
+      public void OnUpdate(float _delta)
       {
          return;
       }
-      public void PhysicsUpdate(float _delta)
+      public void OnPhysicsUpdate(float _delta)
       {
          return;
       }
